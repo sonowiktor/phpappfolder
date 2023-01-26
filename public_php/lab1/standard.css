@@ -1,0 +1,182 @@
+html {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-family: Arial
+}
+
+body {
+    padding: 10px
+}
+
+/* Login Page Elements */
+
+.login-wrapper {
+    padding: 10px;
+    width: 410px;
+    display: block;
+    margin: 15% auto auto;
+    background: lightgrey;
+    border: medium solid black;
+    text-align: center;
+}
+
+.login-success-msg {
+    padding: 5px;
+    background-color: #6f6;
+    border: 1px solid #060;
+}
+
+.login-failed-msg {
+    padding: 10px;
+    margin: auto;
+    background-color: #f66;
+    border: 1px solid #600;
+
+    animation: blinker 1s linear;
+    text-align: center
+}
+
+.login-content {
+    padding: 10px;
+}
+
+.login-table {
+    margin-top: 15px;
+    text-align: center;
+    display: inline;
+}
+
+.login-buttons {
+    padding: 10px;
+}
+
+@keyframes blinker {
+    75% {
+        opacity: 0;
+    }
+}
+
+/* Response Table Page */
+
+.response-table {
+    margin-top: 15px;
+    outline: 1px solid black;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.response-table td, th {
+    padding: 5px 5px;
+    text-align: center;
+}
+
+.response-table th {
+    background-color: grey;
+}
+
+.response-table tr {
+    background-color: #eee
+}
+
+/* Global Handy Class Attributes To Attach */
+
+.topMargin15 {
+    margin-top: 15px
+}
+
+.leftMargin15 {
+    margin-left: 15px
+}
+
+.inline {
+    display: inline;
+    float: left
+}
+
+/* Log out Page Elements */
+
+.logout-title {
+    width: 600px;
+    display: block;
+    margin: 15% auto auto;
+    background: lightgrey;
+    border: medium solid black;
+    text-align: center;
+}
+
+/* Register Page Elements */
+
+.register-wrapper {
+    padding: 10px;
+    width: 410px;
+    display: block;
+    margin: 15% auto auto;
+    background: lightgrey;
+    border: medium solid black;
+    text-align: center;
+}
+
+.register-buttons {
+    padding: 10px;
+}
+
+/* Telemetry Data Page Elements */
+
+.homepage-title {
+    margin: auto;
+    width: 300px;
+    left: 45%;
+
+    background: lightgrey;
+    border: medium solid black;
+    text-align: center;
+}
+
+.login-failed-wrapper {
+    width: 410px;
+    margin: 0;
+    top: 45.5%;
+    left: 38.5%;
+    position: absolute;
+}
+
+.login-failed-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin: auto;
+    position: absolute;
+}
+
+.homepage-table {
+    background: grey;
+    text-align: center;
+}
+
+.homepage-tableRow {
+    background: lightgrey;
+    text-align: center;
+}
+
+.homepage-buttons {
+    position: relative;
+    top: 18px;
+    left: 10px;
+    display: inline;
+}
+
+.text-right {
+    float: right
+}
+
+.input-field {
+    float: left;
+    width: 100%
+}
+
+/* useful links on homepage */
+.useful-links h3 {
+    float:left
+}

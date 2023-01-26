@@ -1,0 +1,52 @@
+{% extends 'banner.html.twig' %}
+{% set row = 1 %}
+{% block body %}
+<div class = "homepage-title">
+    <h1>{{ title }}</h1>
+    <p>{{ author }}</p>
+    <h3>Welcome, {{ user.username }}</h3>
+    <p>Last login: {{ user.lastLogin }}</p>
+</div>
+<h2>Database entries:</h2>
+{% if emptyDatabase == true %}
+<p class="login-failed-msg">No data available</p>
+{% else %}
+<table style = "text-align: center; width: 100%; margin-bottom:15px;" class="response-table">
+    <tr class = "homepage-table">
+        <th style = "width: 25px">Row</th>
+        <th>SIM Number</th>
+        <th>Name</th>
+        <th>Email Address</th>
+        <th>Switch 1</th>
+        <th>Switch 2</th>
+        <th>Switch 3</th>
+        <th>Switch 4</th>
+        <th>Fan</th>
+        <th>Temperature</th>
+        <th>Keypad Value</th>
+        <th>Timestamp</th>
+    </tr>
+    {% for item in array %}
+        <tr class = "homepage-tableRow" style = "width:100%">
+            <td>{{ row }}</td>
+            <td style>{{ item.phonenumber }}</td>
+            <td style>{{ item.name }}</td>
+            <td style>{{ item.email }}</td>
+            <td style = "text-align: center">
+                {{ item.sw1?'On':'Off' }} / {{ item.sw2?'On':'Off' }} / {{ item.sw3?'On':'Off' }} / {{ item.sw4?'On':'Off' }} / {{ item.fan1?'On':'Off' }}
+            </td>
+            <td style>{{ item.heater1 }} °C</td>
+            <td style>{{ item.keypad }}</td>
+            <td style>{{ item.timestamp }}</td>
+        </tr>
+        {% set row = row + 1 %}
+    {% endfor %}
+</table>
+{% endif %}
+<div class="useful-links">
+    <div class = "homepage-buttons">
+        <a href = "./m2mResponse"><button>Generate</button></a>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

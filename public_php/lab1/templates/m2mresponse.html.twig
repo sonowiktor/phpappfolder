@@ -1,0 +1,59 @@
+{% extends 'banner.html.twig' %}
+{% block body %}
+    <h1>{{ title }}</h1>
+    <h3>M2M response:</h3>
+    {% if logged_in == false %}
+        <p class="login-failed-msg">Please log in to view this page.<br><a href="./login">Click here to login</a><br><a href=".">Click here to register</a></p>
+    {% else %}
+        {% if errors|length > 0 %}
+            <p class="login-failed-msg">Error: {{ errors }}</p>
+            <p class="inline leftMargin15"><a href=".">Go back to homepage</a></p>
+        {% else %}
+            {% if dbInsertErrors|length > 0 %}
+                <p class="login-failed-msg">{{ dbInsertErrors }}</p>
+            {% endif %}
+            {% if dbInsertSuccess|length > 0 %}
+                <p class="login-success-msg">{{ dbInsertSuccess }}</p>
+            {% endif %}
+            <table class="response-table">
+                <tr>
+                    <th>SIM Number</th>
+                    <th>Switch 1</th>
+                    <th>Switch 2</th>
+                    <th>Switch 3</th>
+                    <th>Switch 4</th>
+                    <th>Fan</th>
+                    <th>Heater</th>
+                    <th>encKeypad</th>
+                    <th>Time</th>
+                </tr>
+                <tr>
+                    <td>{{ m2m.simNo }}</td>
+                    <td>{{ m2m.sw1 }}</td>
+                    <td>{{ m2m.sw2 }}</td>
+                    <td>{{ m2m.sw3 }}</td>
+                    <td>{{ m2m.sw4 }}</td>
+                    <td>{{ m2m.fan1 }}</td>
+                    <td>{{ m2m.heater1 }} °C</td>
+                    <td>{{ m2m.encKeypad }}</td>
+                    <td>{{ m2m.timestamp }}</td>
+                </tr>
+            </table>
+            <form action="./m2mResponse" method="post" class="topMargin15 inline">
+                <input type="hidden" id="simNo" name="simNo" value="{{ m2m.simNo }}">
+                <input type="hidden" id="sw1" name="sw1" value="{{ m2m.sw1 }}">
+                <input type="hidden" id="sw2" name="sw2" value="{{ m2m.sw2 }}">
+                <input type="hidden" id="sw3" name="sw3" value="{{ m2m.sw3 }}">
+                <input type="hidden" id="sw4" name="sw4" value="{{ m2m.sw4 }}">
+                <input type="hidden" id="fan1" name="fan1" value="{{ m2m.fan1 }}">
+                <input type="hidden" id="heater1" name="heater1" value="{{ m2m.heater1 }}">
+                <input type="hidden" id="encKeypad" name="encKeypad" value="{{ m2m.encKeypad }}">
+                <input type="hidden" id="timestamp" name="timestamp" value="{{ m2m.timestamp }}">
+                <input type="hidden" id="username" name="username" value="{{ userData.username }}">
+                <input type="hidden" id="email" name="email" value="{{ userData.email }}">
+                <input type="submit" value="Send message to Database">
+            </form>
+            <a style="position:relative;top:40px;left:40px;" href = "./"><button>Return to homepage</button></a>
+        {% endif %}
+    {% endif %}
+{% endblock %}
