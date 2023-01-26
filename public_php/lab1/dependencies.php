@@ -10,17 +10,17 @@ include 'src/DatabaseWrapper.php';
 include 'src/SessionWrapper.php';
 include 'src/Monologging.php';
 
-use Gobbwobblers\M2mResponse;
-use Gobbwobblers\InputContainer;
+use Coursework\M2mResponse;
+use Coursework\InputContainer;
 
-//use Gobbwobblers\Authentication;
-use Gobbwobblers\KeyAuth;
-use Gobbwobblers\Message;
+
+use Coursework\KeyAuth;
+use Coursework\Message;
 
 //use Gobbwobblers\HtmlData;
-use Gobbwobblers\DatabaseWrapper;
-use Gobbwobblers\SessionWrapper;
-use Gobbwobblers\Monologging;
+use Coursework\DatabaseWrapper;
+use Coursework\SessionWrapper;
+use Coursework\Monologging;
 
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
@@ -44,27 +44,27 @@ $container['view'] = function ($container) {
 };
 
 $container['DatabaseWrapper'] = function () {
-    return new Gobbwobblers\DatabaseWrapper();
+    return new Coursework\DatabaseWrapper();
 };
 
 $container['InputContainer'] = function () {
-    return new Gobbwobblers\InputContainer();
+    return new Coursework\InputContainer();
 };
 
 $container['KeyAuth'] = function () {
-    return new Gobbwobblers\KeyAuth();
+    return new Coursework\KeyAuth();
 };
 
 $container['M2mResponse'] = function () {
-    return new Gobbwobblers\M2mResponse();
+    return new Coursework\M2mResponse();
 };
 
 $container['Message'] = function () {
-    return new Gobbwobblers\Message();
+    return new Coursework\Message();
 };
 
 $container['SessionWrapper'] = function () {
-    return new Gobbwobblers\SessionWrapper();
+    return new Coursework\SessionWrapper();
 };
 
 $container['Logger'] = function () {

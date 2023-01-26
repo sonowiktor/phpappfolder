@@ -10,17 +10,17 @@ $app->any('/m2mResponse', function(Request $request, Response $response)
     //check if user is using offline mode
     if (!$GLOBALS['spoofDatabase']) {
         //check user login status with KeyAuth
-        $keypairAuth = new Gobbwobblers\KeyAuth();
+        $keypairAuth = new Coursework\KeyAuth();
         if ($keypairAuth->exists()) {
             $loginStatus = true;$userData = $keypairAuth->getUserData();
         }
 
         //check and get $_POST data: if they are pushing m2mMessage to database
         if ($loginStatus == true && $_POST) {
-            $postedMessage = new Gobbwobblers\Message();
+            $postedMessage = new Coursework\Message();
             if ($postedMessage->addPost($_POST)) {
                 $validatedMessage = $postedMessage->getMessage();
-                $conn = new Gobbwobblers\DatabaseWrapper();
+                $conn = new Coursework\DatabaseWrapper();
                 $conn->setProcedure('getMessageByTimestamp');
                 $conn->setArguments(["timestamp" => $validatedMessage['timestamp']]);
                 $result = $conn->execute();
@@ -28,10 +28,10 @@ $app->any('/m2mResponse', function(Request $request, Response $response)
                     $dbInsertErrors .= "Duplicate M2M Message exists in the database";
                     //log the message to the database + logger
                     $logMessage = date('m/d/Y h:i:s a', time()) . " :ALERT: M2MResponse Error: Someone tried logging a duplicate M2M message";
-                    $log = new Gobbwobblers\Monologging();
+                    $log = new Coursework\Monologging();
                     $log->log("notice", $logMessage);
                     //make new connection to insert logs
-                    $conn = new Gobbwobblers\DatabaseWrapper();
+                    $conn = new Coursework\DatabaseWrapper();
                     $conn->setProcedure("addLog");
                     $conn->setArguments(["message"=>$logMessage]);
                     $conn->execute();
@@ -57,10 +57,10 @@ $app->any('/m2mResponse', function(Request $request, Response $response)
                 $dbInsertErrors .= "Issue with the M2M Message - columns or login details not sent or empty";
                 //log the message to the database + logger
                 $logMessage = date('m/d/Y h:i:s a', time()) . " :ALERT: M2MResponse Error: Someone tried logging an M2M Message ~ " . $dbInsertErrors;
-                $log = new Gobbwobblers\Monologging();
+                $log = new Coursework\Monologging();
                 $log->log("notice", $logMessage);
                 //make new connection to insert logs
-                $conn = new Gobbwobblers\DatabaseWrapper();
+                $conn = new Coursework\DatabaseWrapper();
                 $conn->setProcedure("addLog");
                 $conn->setArguments(["message"=>$logMessage]);
                 $conn->execute();
@@ -68,9 +68,9 @@ $app->any('/m2mResponse', function(Request $request, Response $response)
         }
 
         //create a new m2mResponse object
-        $m2mResponse = new Gobbwobblers\M2mResponse();
+        $m2mResponse = new Coursework\M2mResponse();
         //create a new message object
-        $newMessage = new Gobbwobblers\Message();
+        $newMessage = new Coursework\Message();
         //pass the m2mResponse message to the new message thru getMessage method
         $newMessage->addM2M($m2mResponse->getMessage());
         //check for errors
@@ -79,10 +79,10 @@ $app->any('/m2mResponse', function(Request $request, Response $response)
             $errors = $newMessage->getErrors();
             //log the message to the database + logger
             $logMessage = date('m/d/Y h:i:s a', time()) . " :ALERT: " . $newMessage->getErrors();
-            $log = new Gobbwobblers\Monologging();
+            $log = new Coursework\Monologging();
             $log->log("notice", $logMessage);
             //make new connection to insert logs
-            $conn = new Gobbwobblers\DatabaseWrapper();
+            $conn = new Coursework\DatabaseWrapper();
             $conn->setProcedure("addLog");
             $conn->setArguments(["message"=>$logMessage]);
             $conn->execute();
@@ -103,10 +103,10 @@ $app->any('/m2mResponse', function(Request $request, Response $response)
     return $this->view->render($response,
         'm2mResponse.html.twig',
         [
-            'document_title' => "Gobbwobblers M2M Response",
+            'document_title' => "Coursework M2M Response",
             'css_path' => CSS_PATH,
             'title' => "M2M Response",
-            'author' => "Gobbwobblers",
+            'author' => "23-3110-AI",
             'logged_in' => $loginStatus,
             'userData' => $userData,
             'errors' => $errors,

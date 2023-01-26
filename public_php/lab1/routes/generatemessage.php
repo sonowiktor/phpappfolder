@@ -37,7 +37,7 @@ $app->get('/', function(Request $request, Response $response)
             'document_title' => "Telemetry Data",
             'css_path' => CSS_PATH,
             'title' => "Telemetry Data",
-            'author' => "Gobbwobblers",
+            'author' => "23-3110-AI",
             'login_status' => $loginStatus,
             'array' => $databaseResults,
             'user' => $userData,

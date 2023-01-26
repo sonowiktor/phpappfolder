@@ -10,8 +10,8 @@ $app->any('/register', function(Request $request, Response $response)
 
     //NOTE: this page loads and can be edited without offline mode
     //use new SessionWrapper and KeyAuth to check the db+session keypair is valid
-    $session = new Gobbwobblers\SessionWrapper();
-    $keypairAuth = new Gobbwobblers\KeyAuth();
+    $session = new Coursework\SessionWrapper();
+    $keypairAuth = new Coursework\KeyAuth();
     if ($keypairAuth->exists()) {
         //set login status to true (for twig)
         $loginStatus = true;
@@ -22,10 +22,10 @@ $app->any('/register', function(Request $request, Response $response)
         $session->unsetSession("login_key");
         //log the message to the database + logger
         $logMessage = date('m/d/Y h:i:s a', time()) . " :ALERT: User's session key was unset. If this happens a lot there might be an error with sessions";
-        $log = new Gobbwobblers\Monologging();
+        $log = new Coursework\Monologging();
         $log->log("notice", $logMessage);
         //make new connection to insert logs
-        $conn = new Gobbwobblers\DatabaseWrapper();
+        $conn = new Coursework\DatabaseWrapper();
         $conn->setProcedure("addLog");
         $conn->setArguments(["message"=>$logMessage]);
         $conn->execute();
@@ -36,10 +36,10 @@ $app->any('/register', function(Request $request, Response $response)
     if (isset($_POST['iusername']) && isset($_POST['ipassword']) && isset($_POST['ipassword2']) && isset($_POST['iemail'])) {
         //after isset check, get the _POST form data into "Input" objects
         //username and email are not case sensitive (will be made lowercase)
-        $inputUsername = new Gobbwobblers\InputContainer(strtolower($_POST['iusername']));
-        $inputPassword = new Gobbwobblers\InputContainer($_POST['ipassword']);
-        $inputPassword2 = new Gobbwobblers\InputContainer($_POST['ipassword2']);
-        $inputEmail = new Gobbwobblers\InputContainer(strtolower($_POST['iemail']));
+        $inputUsername = new Coursework\InputContainer(strtolower($_POST['iusername']));
+        $inputPassword = new Coursework\InputContainer($_POST['ipassword']);
+        $inputPassword2 = new Coursework\InputContainer($_POST['ipassword2']);
+        $inputEmail = new Coursework\InputContainer(strtolower($_POST['iemail']));
 
         //validate and sanitize
         if ($inputUsername->validate() !== true) {$inputUsername->sanitize();}
@@ -104,7 +104,7 @@ $app->any('/register', function(Request $request, Response $response)
             }
         } else {
             //quick check if the username is already being used in the database
-            $usernameCheck = new Gobbwobblers\DatabaseWrapper();
+            $usernameCheck = new Coursework\DatabaseWrapper();
             $usernameCheck->setProcedure('findUserByUsername');
             $usernameCheck->setArguments([
                 "username" => $inputUsername->getInput()
@@ -115,10 +115,10 @@ $app->any('/register', function(Request $request, Response $response)
                     array_push($tempErrorsArray, ("Username already in use"));
                     //log the message to the database + logger
                     $logMessage = date('m/d/Y h:i:s a', time()) . " :REG ERROR: " . $inputUsername->getInput() . " tried to create account - username alreadu in use";
-                    $log = new Gobbwobblers\Monologging();
+                    $log = new Coursework\Monologging();
                     $log->log("notice", $logMessage);
                     //make new connection to insert logs
-                    $conn = new Gobbwobblers\DatabaseWrapper();
+                    $conn = new Coursework\DatabaseWrapper();
                     $conn->setProcedure("addLog");
                     $conn->setArguments(["message"=>$logMessage]);
                     $conn->execute();
@@ -126,7 +126,7 @@ $app->any('/register', function(Request $request, Response $response)
             }
 
             //quick check if the email is already being used in the database
-            $emailCheck = new Gobbwobblers\DatabaseWrapper();
+            $emailCheck = new Coursework\DatabaseWrapper();
             $emailCheck->setProcedure('findUserByEmail');
             $emailCheck->setArguments([
                 "email" => $inputEmail->getInput()
@@ -145,7 +145,7 @@ $app->any('/register', function(Request $request, Response $response)
                     $login_msg .= $tempErrorsArray[$i];
                     //log the message to the database + logger
                     $logMessage = date("Y-m-d h:i:sa", time()) . " ::: Registation Error: " . $inputUsername->getInput() . ", tried to log in unnsuccessfully";
-                    $log = new Gobbwobblers\Monologging();
+                    $log = new Coursework\Monologging();
                     $log->log("notice", $logMessage);
                 }
             } else {
@@ -154,7 +154,7 @@ $app->any('/register', function(Request $request, Response $response)
                 $passwordSalt = base64_encode(random_bytes(32));
                 $passwordHash = hash("sha512", $inputPassword->getInput().$passwordSalt);
                 //create new databaseWrapper
-                $conn = new Gobbwobblers\DatabaseWrapper();
+                $conn = new Coursework\DatabaseWrapper();
                 //set the procedure and arguments
                 $conn->setProcedure('registerUser');
                 $conn->setArguments([
@@ -168,10 +168,10 @@ $app->any('/register', function(Request $request, Response $response)
                 $regSuccess = true;
                 //log the message to the database + logger
                 $logMessage = date('m/d/Y h:i:s a', time()) . " :NOTICE: " . $inputUsername->getInput() . ", has successfully registered a new account. Congratulation!";
-                $log = new Gobbwobblers\Monologging();
+                $log = new Coursework\Monologging();
                 $log->log("notice", $logMessage);
                 //make new connection to insert logs
-                $conn = new Gobbwobblers\DatabaseWrapper();
+                $conn = new Coursework\DatabaseWrapper();
                 $conn->setProcedure("addLog");
                 $conn->setArguments(["message"=>$logMessage]);
                 $conn->execute();
@@ -182,10 +182,10 @@ $app->any('/register', function(Request $request, Response $response)
     return $this->view->render($response,
         'register.html.twig',
         [
-            'document_title' => "Gobbwobblers Register",
+            'document_title' => "Coursework Register",
             'css_path' => CSS_PATH,
-            'title' => "Gobbwobblers Register",
-            'author' => "Gobbwobblers",
+            'title' => "Coursework Register",
+            'author' => "23-3110-AI",
             'logged_in' => $loginStatus,
             'login_msg' => $login_msg,
             'reg_success' => $regSuccess

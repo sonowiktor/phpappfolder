@@ -9,7 +9,7 @@ $app ->get('/', function (Request $request, Response $response) {
     //check if the application is in offline mode/databaseSpoofing mode (when no connection to a local database)
     if (!$GLOBALS['spoofDatabase']) {
         //check user is logged in with session key
-        $keypairAuth = new Gobbwobblers\KeyAuth();
+        $keypairAuth = new Coursework\KeyAuth();
         if ($keypairAuth->exists()) {
             //set loginStatus variable to true for Twig and other checks
             $loginStatus = true;
@@ -23,8 +23,8 @@ $app ->get('/', function (Request $request, Response $response) {
         //	the form on this page will loopback to this script on the same page (to avoid excessive files)
         if (isset($_POST['iusername']) && isset($_POST['ipassword'])) {
             //after isset check, get the _POST form data into "Input" objects
-            $inputUsername = new Gobbwobblers\InputContainer(strtolower($_POST['iusername']));
-            $inputPassword = new Gobbwobblers\InputContainer($_POST['ipassword']);
+            $inputUsername = new Coursework\InputContainer(strtolower($_POST['iusername']));
+            $inputPassword = new Coursework\InputContainer($_POST['ipassword']);
 
             //validation and sanitize these objects
             if ($inputUsername->validate() !== true) {$inputUsername->sanitize();}
@@ -56,7 +56,7 @@ $app ->get('/', function (Request $request, Response $response) {
             //loop through the array and add each string to the $login_msg var
             if (count($tempErrorsArray) == 0) {
                 //if no errors exist thus far, check the database to see if username exists:
-                $usernameCheck = new Gobbwobblers\DatabaseWrapper();
+                $usernameCheck = new Coursework\DatabaseWrapper();
                 $usernameCheck->setProcedure('findUserByUsername');
                 $usernameCheck->setArguments(["username"=>$inputUsername->getInput()]);
                 $usernameCheckResult = $usernameCheck->execute();
@@ -73,10 +73,10 @@ $app ->get('/', function (Request $request, Response $response) {
                             array_push($tempErrorsArray, "Password incorrect");
                             //log the message to the database + logger
                             $logMessage = date('m/d/Y h:i:s a', time()) . " :NOTICE: Login Error: Someone tried logging into account " . $inputUsername->getInput() . " with wrong username.";
-                            $log = new Gobbwobblers\Monologging();
+                            $log = new Coursework\Monologging();
                             $log->log("notice", $logMessage);
                             //make new connection to insert logs
-                            $conn = new Gobbwobblers\DatabaseWrapper();
+                            $conn = new Coursework\DatabaseWrapper();
                             $conn->setProcedure("addLog");
                             $conn->setArguments(["message"=>$logMessage]);
                             $conn->execute();
@@ -86,7 +86,7 @@ $app ->get('/', function (Request $request, Response $response) {
                             //generate key to be used
                             $randomKey = substr(base64_encode(random_bytes(192)), 0, 200);
                             //get any rows from database users with this key
-                            $checkSessionKey = new Gobbwobblers\DatabaseWrapper();
+                            $checkSessionKey = new Coursework\DatabaseWrapper();
                             $checkSessionKey->setProcedure('GetUserByKey');
                             $checkSessionKey->setArguments(["key"=>$randomKey]);
                             $checkSessionKeyResult = $checkSessionKey->execute();
@@ -96,16 +96,16 @@ $app ->get('/', function (Request $request, Response $response) {
 
                                 //log the message to the database + logger
                                 $logMessage = date('m/d/Y h:i:s a', time()) . " :ALERT: Login Error: Generated session key was duplicate. If this happens a lot, check the code for 'login.php'";
-                                $log = new Gobbwobblers\Monologging();
+                                $log = new Coursework\Monologging();
                                 $log->log("notice", $logMessage);
                                 //make new connection to insert logs
-                                $conn = new Gobbwobblers\DatabaseWrapper();
+                                $conn = new Coursework\DatabaseWrapper();
                                 $conn->setProcedure("addLog");
                                 $conn->setArguments(["message"=>$logMessage]);
                                 $conn->execute();
                             } else {
                                 //if no users exist with this key, brilliant - update key column in the database with the new generated key
-                                $updateKey = new Gobbwobblers\DatabaseWrapper();
+                                $updateKey = new Coursework\DatabaseWrapper();
                                 $updateKey->setProcedure('updateSessionKey');
                                 $updateKey->setArguments([
                                     "key" => $randomKey,
@@ -113,16 +113,16 @@ $app ->get('/', function (Request $request, Response $response) {
                                 ]);
                                 $updateKeyResult = $updateKey->execute();
                                 //next set the user's session key to the same as the database - making a keypair for future KeyAuth validations (on page load)
-                                $session = new Gobbwobblers\SessionWrapper();
+                                $session = new Coursework\SessionWrapper();
                                 $session->setSessionData("login_key", $randomKey);
                                 //set login status to true
                                 $loginStatus = true;
                                 //log the message to the database + logger
                                 $logMessage = date('m/d/Y h:i:s a', time()) . " :INFO: Login success: " . $inputUsername->getInput() . " logged in successfully";
-                                $log = new Gobbwobblers\Monologging();
+                                $log = new Coursework\Monologging();
                                 $log->log("notice", $logMessage);
                                 //make new connection to insert logs
-                                $conn = new Gobbwobblers\DatabaseWrapper();
+                                $conn = new Coursework\DatabaseWrapper();
                                 $conn->setProcedure("addLog");
                                 $conn->setArguments(["message"=>$logMessage]);
                                 $conn->execute();
@@ -144,10 +144,10 @@ $app ->get('/', function (Request $request, Response $response) {
                 }
                 //log the message to the database + logger
                 $logMessage = date('m/d/Y h:i:s a', time()) . " :NOTICE: Login Errors: " . $login_msg;
-                $log = new Gobbwobblers\Monologging();
+                $log = new Coursework\Monologging();
                 $log->log("notice", $logMessage);
                 //make new connection to insert logs
-                $conn = new Gobbwobblers\DatabaseWrapper();
+                $conn = new Coursework\DatabaseWrapper();
                 $conn->setProcedure("addLog");
                 $conn->setArguments(["message"=>$logMessage]);
                 $conn->execute();
@@ -163,10 +163,10 @@ $app ->get('/', function (Request $request, Response $response) {
     return $this->view->render($response,
         'login.html.twig',
         [
-            'document_title' => "Gobbwobblers Login",
+            'document_title' => "Coursework Login",
             'css_path' => CSS_PATH,
-            'title' => "Gobbwobblers Login",
-            'author' => "Gobbwobblers",
+            'title' => "Coursework Login",
+            'author' => "23-3110-AI",
             'logged_in' => $loginStatus,
             'login_msg' => $login_msg
         ]);
