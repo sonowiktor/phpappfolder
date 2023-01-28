@@ -1,0 +1,35 @@
+<?php
+$host = "mysql.tech.dmu.ac.uk";
+$dbname = "p2602600db";
+$username = "p2602600";
+$password = "nUrls=85";
+
+try {
+$conn = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
+} catch(PDOException $e) {
+echo "Error: " . $e->getMessage();
+}
+
+$sql = "SELECT * FROM *";
+$stmt = $conn->prepare($sql);
+$stmt->execute();
+
+$data = $stmt->fetchAll();
+
+echo "<table>";
+echo "<tr>";
+echo "<th>ID</th>";
+echo "<th>Name</th>";
+echo "<th>Email</th>";
+echo "</tr>";
+foreach ($data as $row) {
+    echo "<tr>";
+    echo "<td>" . $row['id'] . "</td>";
+    echo "<td>" . $row['name'] . "</td>";
+    echo "<td>" . $row['email'] . "</td>";
+    echo "</tr>";
+}
+echo "</table>";
+
+
+
