@@ -2,6 +2,7 @@
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
+
 $app->any('/m2mResponse', function(Request $request, Response $response)
 {
     //declare vars for user login status and data from keyAuth, and errors from m2mresponse
@@ -28,7 +29,7 @@ $app->any('/m2mResponse', function(Request $request, Response $response)
                     $dbInsertErrors .= "Duplicate M2M Message exists in the database";
                     //log the message to the database + logger
                     $logMessage = date('m/d/Y h:i:s a', time()) . " :ALERT: M2MResponse Error: Someone tried logging a duplicate M2M message";
-                    $log = new Coursework\Monologging();
+                    $log = new Coursework\monolog();
                     $log->log("notice", $logMessage);
                     //make new connection to insert logs
                     $conn = new Coursework\DatabaseWrapper();
@@ -57,7 +58,7 @@ $app->any('/m2mResponse', function(Request $request, Response $response)
                 $dbInsertErrors .= "Issue with the M2M Message - columns or login details not sent or empty";
                 //log the message to the database + logger
                 $logMessage = date('m/d/Y h:i:s a', time()) . " :ALERT: M2MResponse Error: Someone tried logging an M2M Message ~ " . $dbInsertErrors;
-                $log = new Coursework\Monologging();
+                $log = new Coursework\monolog();
                 $log->log("notice", $logMessage);
                 //make new connection to insert logs
                 $conn = new Coursework\DatabaseWrapper();
@@ -68,7 +69,7 @@ $app->any('/m2mResponse', function(Request $request, Response $response)
         }
 
         //create a new m2mResponse object
-        $m2mResponse = new Coursework\M2mResponse();
+        $m2mResponse = new Coursework\m2mResponse();
         //create a new message object
         $newMessage = new Coursework\Message();
         //pass the m2mResponse message to the new message thru getMessage method
@@ -79,7 +80,7 @@ $app->any('/m2mResponse', function(Request $request, Response $response)
             $errors = $newMessage->getErrors();
             //log the message to the database + logger
             $logMessage = date('m/d/Y h:i:s a', time()) . " :ALERT: " . $newMessage->getErrors();
-            $log = new Coursework\Monologging();
+            $log = new Coursework\monolog();
             $log->log("notice", $logMessage);
             //make new connection to insert logs
             $conn = new Coursework\DatabaseWrapper();

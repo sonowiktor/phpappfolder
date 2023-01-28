@@ -73,7 +73,7 @@ $app ->get('/', function (Request $request, Response $response) {
                             array_push($tempErrorsArray, "Password incorrect");
                             //log the message to the database + logger
                             $logMessage = date('m/d/Y h:i:s a', time()) . " :NOTICE: Login Error: Someone tried logging into account " . $inputUsername->getInput() . " with wrong username.";
-                            $log = new Coursework\Monologging();
+                            $log = new Coursework\monolog();
                             $log->log("notice", $logMessage);
                             //make new connection to insert logs
                             $conn = new Coursework\DatabaseWrapper();
@@ -96,7 +96,7 @@ $app ->get('/', function (Request $request, Response $response) {
 
                                 //log the message to the database + logger
                                 $logMessage = date('m/d/Y h:i:s a', time()) . " :ALERT: Login Error: Generated session key was duplicate. If this happens a lot, check the code for 'login.php'";
-                                $log = new Coursework\Monologging();
+                                $log = new Coursework\monolog();
                                 $log->log("notice", $logMessage);
                                 //make new connection to insert logs
                                 $conn = new Coursework\DatabaseWrapper();
@@ -119,7 +119,7 @@ $app ->get('/', function (Request $request, Response $response) {
                                 $loginStatus = true;
                                 //log the message to the database + logger
                                 $logMessage = date('m/d/Y h:i:s a', time()) . " :INFO: Login success: " . $inputUsername->getInput() . " logged in successfully";
-                                $log = new Coursework\Monologging();
+                                $log = new Coursework\monolog();
                                 $log->log("notice", $logMessage);
                                 //make new connection to insert logs
                                 $conn = new Coursework\DatabaseWrapper();
@@ -144,7 +144,7 @@ $app ->get('/', function (Request $request, Response $response) {
                 }
                 //log the message to the database + logger
                 $logMessage = date('m/d/Y h:i:s a', time()) . " :NOTICE: Login Errors: " . $login_msg;
-                $log = new Coursework\Monologging();
+                $log = new Coursework\monolog();
                 $log->log("notice", $logMessage);
                 //make new connection to insert logs
                 $conn = new Coursework\DatabaseWrapper();

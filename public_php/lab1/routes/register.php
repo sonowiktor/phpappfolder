@@ -22,7 +22,7 @@ $app->any('/register', function(Request $request, Response $response)
         $session->unsetSession("login_key");
         //log the message to the database + logger
         $logMessage = date('m/d/Y h:i:s a', time()) . " :ALERT: User's session key was unset. If this happens a lot there might be an error with sessions";
-        $log = new Coursework\Monologging();
+        $log = new Coursework\monolog();
         $log->log("notice", $logMessage);
         //make new connection to insert logs
         $conn = new Coursework\DatabaseWrapper();
@@ -115,7 +115,7 @@ $app->any('/register', function(Request $request, Response $response)
                     array_push($tempErrorsArray, ("Username already in use"));
                     //log the message to the database + logger
                     $logMessage = date('m/d/Y h:i:s a', time()) . " :REG ERROR: " . $inputUsername->getInput() . " tried to create account - username alreadu in use";
-                    $log = new Coursework\Monologging();
+                    $log = new Coursework\monolog();
                     $log->log("notice", $logMessage);
                     //make new connection to insert logs
                     $conn = new Coursework\DatabaseWrapper();
@@ -145,7 +145,7 @@ $app->any('/register', function(Request $request, Response $response)
                     $login_msg .= $tempErrorsArray[$i];
                     //log the message to the database + logger
                     $logMessage = date("Y-m-d h:i:sa", time()) . " ::: Registation Error: " . $inputUsername->getInput() . ", tried to log in unnsuccessfully";
-                    $log = new Coursework\Monologging();
+                    $log = new Coursework\monolog();
                     $log->log("notice", $logMessage);
                 }
             } else {
@@ -168,7 +168,7 @@ $app->any('/register', function(Request $request, Response $response)
                 $regSuccess = true;
                 //log the message to the database + logger
                 $logMessage = date('m/d/Y h:i:s a', time()) . " :NOTICE: " . $inputUsername->getInput() . ", has successfully registered a new account. Congratulation!";
-                $log = new Coursework\Monologging();
+                $log = new Coursework\monolog();
                 $log->log("notice", $logMessage);
                 //make new connection to insert logs
                 $conn = new Coursework\DatabaseWrapper();

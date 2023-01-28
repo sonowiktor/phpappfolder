@@ -1,26 +1,26 @@
 <?php
 
-include 'src/M2mResponse.php';
-include 'src/InputContainer.php';
+include 'src/m2mResponse.php';
+include 'src/inputContainer.php';
 //include 'src/Authentication.php';
 include 'src/KeyAuth.php';
-include 'src/Message.php';
+include 'src/message.php';
 //include 'src/HtmlData.php';
 include 'src/DatabaseWrapper.php';
-include 'src/SessionWrapper.php';
-include 'src/Monologging.php';
+include 'src/session.php';
+include 'src/monolog.php';
 
-use Coursework\M2mResponse;
-use Coursework\InputContainer;
+use Coursework\m2mResponse;
+use Coursework\inputContainer;
 
 
 use Coursework\KeyAuth;
 use Coursework\Message;
 
-//use Gobbwobblers\HtmlData;
+//use Coursework\HtmlData;
 use Coursework\DatabaseWrapper;
-use Coursework\SessionWrapper;
-use Coursework\Monologging;
+use Coursework\session;
+use Coursework\monolog;
 
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
@@ -47,27 +47,27 @@ $container['DatabaseWrapper'] = function () {
     return new Coursework\DatabaseWrapper();
 };
 
-$container['InputContainer'] = function () {
-    return new Coursework\InputContainer();
+$container['inputContainer'] = function () {
+    return new Coursework\inputContainer();
 };
 
 $container['KeyAuth'] = function () {
     return new Coursework\KeyAuth();
 };
 
-$container['M2mResponse'] = function () {
-    return new Coursework\M2mResponse();
+$container['m2mResponse'] = function () {
+    return new Coursework\m2mResponse();
 };
 
-$container['Message'] = function () {
-    return new Coursework\Message();
+$container['message'] = function () {
+    return new Coursework\message();
 };
 
-$container['SessionWrapper'] = function () {
-    return new Coursework\SessionWrapper();
+$container['session'] = function () {
+    return new Coursework\session();
 };
 
-$container['Logger'] = function () {
+$container['logger'] = function () {
     $logger = new Logger('logger');
 
     $log_notices = LOG_FILE_PATH . 'notices.log';
@@ -77,6 +77,11 @@ $container['Logger'] = function () {
     $log_warnings = LOG_FILE_PATH . 'warnings.log';
     $stream_warnings = new StreamHandler($log_warnings, Logger::WARNING);
     $logger->pushHandler($stream_warnings);
+};
 
+$container['xmlParser'] = function ($container) {
+    $model = new \lab1\XmlParser();
+    return $model;
     return $logger;
+
 };
