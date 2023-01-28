@@ -2,11 +2,9 @@
 
 include 'src/m2mResponse.php';
 include 'src/inputContainer.php';
-//include 'src/Authentication.php';
-include 'src/KeyAuth.php';
+include 'src/Auth.php';
 include 'src/message.php';
-//include 'src/HtmlData.php';
-include 'src/DatabaseWrapper.php';
+include 'src/Database.php';
 include 'src/session.php';
 include 'src/monolog.php';
 
@@ -14,17 +12,28 @@ use Coursework\m2mResponse;
 use Coursework\inputContainer;
 
 
-use Coursework\KeyAuth;
+use Coursework\Auth;
 use Coursework\Message;
 
 //use Coursework\HtmlData;
-use Coursework\DatabaseWrapper;
+use Coursework\Database;
 use Coursework\session;
 use Coursework\monolog;
 
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
-use Monolog\Handler\FingersCrossedHandler;
+//use Monolog\Handler\FingersCrossedHandler;
+
+
+$container['logger'] = function ($container) {
+    $logger = new Monolog\Logger('logger');
+    $file_handler = new \Monolog\Handler\StreamHandler('../logs/app.log');
+    $logger->pushHandler($file_handler);
+
+    return $logger;
+};
+
+
 
 // Register component on container
 $container['view'] = function ($container) {
@@ -43,8 +52,8 @@ $container['view'] = function ($container) {
     return $view;
 };
 
-$container['DatabaseWrapper'] = function () {
-    return new Coursework\DatabaseWrapper();
+$container['Database'] = function () {
+    return new Coursework\Database();
 };
 
 $container['inputContainer'] = function () {
@@ -52,15 +61,15 @@ $container['inputContainer'] = function () {
 };
 
 $container['KeyAuth'] = function () {
-    return new Coursework\KeyAuth();
+    return new Coursework\Auth();
 };
 
 $container['m2mResponse'] = function () {
     return new Coursework\m2mResponse();
 };
 
-$container['message'] = function () {
-    return new Coursework\message();
+$container['Message'] = function () {
+    return new Coursework\Message();
 };
 
 $container['session'] = function () {

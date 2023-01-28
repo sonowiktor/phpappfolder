@@ -3,13 +3,13 @@
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
-$app ->get('/', function (Request $request, Response $response) {
+$app ->get('/', function (Request $request, Response $response) use ($app) {
     $errors = ""; $loginStatus = false; $userData = ""; $login_msg = "";
 
     //check if the application is in offline mode/databaseSpoofing mode (when no connection to a local database)
     if (!$GLOBALS['spoofDatabase']) {
         //check user is logged in with session key
-        $keypairAuth = new Coursework\KeyAuth();
+        $keypairAuth = new Coursework\auth();
         if ($keypairAuth->exists()) {
             //set loginStatus variable to true for Twig and other checks
             $loginStatus = true;
@@ -23,8 +23,8 @@ $app ->get('/', function (Request $request, Response $response) {
         //	the form on this page will loopback to this script on the same page (to avoid excessive files)
         if (isset($_POST['iusername']) && isset($_POST['ipassword'])) {
             //after isset check, get the _POST form data into "Input" objects
-            $inputUsername = new Coursework\InputContainer(strtolower($_POST['iusername']));
-            $inputPassword = new Coursework\InputContainer($_POST['ipassword']);
+            $inputUsername = new Coursework\inputContainer(strtolower($_POST['iusername']));
+            $inputPassword = new Coursework\inputContainer($_POST['ipassword']);
 
             //validation and sanitize these objects
             if ($inputUsername->validate() !== true) {$inputUsername->sanitize();}
