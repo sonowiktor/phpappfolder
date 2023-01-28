@@ -47,6 +47,7 @@ $app ->get('/', function (Request $request, Response $response) use ($app) {
             //check if errors exist in password input and add to tempArray if exists
             if(count($inputPassword->getErrorsArray()) > 0) {
                 for ($i = 0;$i < count($inputPassword->getErrorsArray());$i++) {
+
                     //push user-friendly error message to array
                     array_push($tempErrorsArray, "Password ".$inputPassword->getErrorsArray()[$i]);
                 }
@@ -56,7 +57,7 @@ $app ->get('/', function (Request $request, Response $response) use ($app) {
             //loop through the array and add each string to the $login_msg var
             if (count($tempErrorsArray) == 0) {
                 //if no errors exist thus far, check the database to see if username exists:
-                $usernameCheck = new Coursework\DatabaseWrapper();
+                $usernameCheck = new Coursework\Database();
                 $usernameCheck->setProcedure('findUserByUsername');
                 $usernameCheck->setArguments(["username"=>$inputUsername->getInput()]);
                 $usernameCheckResult = $usernameCheck->execute();
@@ -76,7 +77,7 @@ $app ->get('/', function (Request $request, Response $response) use ($app) {
                             $log = new Coursework\monolog();
                             $log->log("notice", $logMessage);
                             //make new connection to insert logs
-                            $conn = new Coursework\DatabaseWrapper();
+                            $conn = new Coursework\Database();
                             $conn->setProcedure("addLog");
                             $conn->setArguments(["message"=>$logMessage]);
                             $conn->execute();
@@ -86,7 +87,7 @@ $app ->get('/', function (Request $request, Response $response) use ($app) {
                             //generate key to be used
                             $randomKey = substr(base64_encode(random_bytes(192)), 0, 200);
                             //get any rows from database users with this key
-                            $checkSessionKey = new Coursework\DatabaseWrapper();
+                            $checkSessionKey = new Coursework\Database();
                             $checkSessionKey->setProcedure('GetUserByKey');
                             $checkSessionKey->setArguments(["key"=>$randomKey]);
                             $checkSessionKeyResult = $checkSessionKey->execute();
@@ -99,13 +100,13 @@ $app ->get('/', function (Request $request, Response $response) use ($app) {
                                 $log = new Coursework\monolog();
                                 $log->log("notice", $logMessage);
                                 //make new connection to insert logs
-                                $conn = new Coursework\DatabaseWrapper();
+                                $conn = new Coursework\Database();
                                 $conn->setProcedure("addLog");
                                 $conn->setArguments(["message"=>$logMessage]);
                                 $conn->execute();
                             } else {
                                 //if no users exist with this key, brilliant - update key column in the database with the new generated key
-                                $updateKey = new Coursework\DatabaseWrapper();
+                                $updateKey = new Coursework\Database();
                                 $updateKey->setProcedure('updateSessionKey');
                                 $updateKey->setArguments([
                                     "key" => $randomKey,
@@ -113,7 +114,7 @@ $app ->get('/', function (Request $request, Response $response) use ($app) {
                                 ]);
                                 $updateKeyResult = $updateKey->execute();
                                 //next set the user's session key to the same as the database - making a keypair for future KeyAuth validations (on page load)
-                                $session = new Coursework\SessionWrapper();
+                                $session = new Coursework\session();
                                 $session->setSessionData("login_key", $randomKey);
                                 //set login status to true
                                 $loginStatus = true;
@@ -122,7 +123,7 @@ $app ->get('/', function (Request $request, Response $response) use ($app) {
                                 $log = new Coursework\monolog();
                                 $log->log("notice", $logMessage);
                                 //make new connection to insert logs
-                                $conn = new Coursework\DatabaseWrapper();
+                                $conn = new Coursework\Database();
                                 $conn->setProcedure("addLog");
                                 $conn->setArguments(["message"=>$logMessage]);
                                 $conn->execute();
@@ -147,7 +148,7 @@ $app ->get('/', function (Request $request, Response $response) use ($app) {
                 $log = new Coursework\monolog();
                 $log->log("notice", $logMessage);
                 //make new connection to insert logs
-                $conn = new Coursework\DatabaseWrapper();
+                $conn = new Coursework\Database();
                 $conn->setProcedure("addLog");
                 $conn->setArguments(["message"=>$logMessage]);
                 $conn->execute();

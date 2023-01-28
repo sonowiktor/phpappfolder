@@ -10,8 +10,9 @@ $app->any('/m2mResponse', function(Request $request, Response $response)
 
     //check if user is using offline mode
     if (!$GLOBALS['spoofDatabase']) {
-        //check user login status with KeyAuth
-        $keypairAuth = new Coursework\KeyAuth();
+
+        //check user login status with Auth
+        $keypairAuth = new Coursework\Auth();
         if ($keypairAuth->exists()) {
             $loginStatus = true;$userData = $keypairAuth->getUserData();
         }
@@ -21,7 +22,7 @@ $app->any('/m2mResponse', function(Request $request, Response $response)
             $postedMessage = new Coursework\Message();
             if ($postedMessage->addPost($_POST)) {
                 $validatedMessage = $postedMessage->getMessage();
-                $conn = new Coursework\DatabaseWrapper();
+                $conn = new Coursework\Database();
                 $conn->setProcedure('getMessageByTimestamp');
                 $conn->setArguments(["timestamp" => $validatedMessage['timestamp']]);
                 $result = $conn->execute();
@@ -32,7 +33,7 @@ $app->any('/m2mResponse', function(Request $request, Response $response)
                     $log = new Coursework\monolog();
                     $log->log("notice", $logMessage);
                     //make new connection to insert logs
-                    $conn = new Coursework\DatabaseWrapper();
+                    $conn = new Coursework\Database();
                     $conn->setProcedure("addLog");
                     $conn->setArguments(["message"=>$logMessage]);
                     $conn->execute();
@@ -61,7 +62,7 @@ $app->any('/m2mResponse', function(Request $request, Response $response)
                 $log = new Coursework\monolog();
                 $log->log("notice", $logMessage);
                 //make new connection to insert logs
-                $conn = new Coursework\DatabaseWrapper();
+                $conn = new Coursework\Database();
                 $conn->setProcedure("addLog");
                 $conn->setArguments(["message"=>$logMessage]);
                 $conn->execute();
@@ -82,14 +83,16 @@ $app->any('/m2mResponse', function(Request $request, Response $response)
             $logMessage = date('m/d/Y h:i:s a', time()) . " :ALERT: " . $newMessage->getErrors();
             $log = new Coursework\monolog();
             $log->log("notice", $logMessage);
-            //make new connection to insert logs
-            $conn = new Coursework\DatabaseWrapper();
+
+            ///make new connection to insert logs
+            $conn = new Coursework\Database();
             $conn->setProcedure("addLog");
             $conn->setArguments(["message"=>$logMessage]);
             $conn->execute();
         }
         $newMessage = $newMessage->getMessage();
     } else {
+
         //spoofData
         $loginStatus = true;
         $date = date(DATE_ATOM);

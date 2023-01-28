@@ -6,7 +6,7 @@ $app->get('/', function(Request $request, Response $response)
 {
     $loginStatus = false; $userData = ""; $emptyDatabase = true;
 
-    $conn = new Coursework\DatabaseWrapper();
+    $conn = new Coursework\Database();
     $conn->setProcedure('getAllMessages');
     $databaseResults = $conn->execute();
     //$databaseResults = [];

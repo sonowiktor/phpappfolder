@@ -10,12 +10,8 @@ include 'src/monolog.php';
 
 use Coursework\m2mResponse;
 use Coursework\inputContainer;
-
-
 use Coursework\Auth;
 use Coursework\Message;
-
-//use Coursework\HtmlData;
 use Coursework\Database;
 use Coursework\session;
 use Coursework\monolog;
@@ -60,7 +56,7 @@ $container['inputContainer'] = function () {
     return new Coursework\inputContainer();
 };
 
-$container['KeyAuth'] = function () {
+$container['Auth'] = function () {
     return new Coursework\Auth();
 };
 

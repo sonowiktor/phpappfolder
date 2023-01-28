@@ -10,8 +10,8 @@ $app->any('/register', function(Request $request, Response $response)
 
     //NOTE: this page loads and can be edited without offline mode
     //use new SessionWrapper and KeyAuth to check the db+session keypair is valid
-    $session = new Coursework\SessionWrapper();
-    $keypairAuth = new Coursework\KeyAuth();
+    $session = new Coursework\Session();
+    $keypairAuth = new Coursework\Auth();
     if ($keypairAuth->exists()) {
         //set login status to true (for twig)
         $loginStatus = true;
@@ -25,7 +25,7 @@ $app->any('/register', function(Request $request, Response $response)
         $log = new Coursework\monolog();
         $log->log("notice", $logMessage);
         //make new connection to insert logs
-        $conn = new Coursework\DatabaseWrapper();
+        $conn = new Coursework\Database();
         $conn->setProcedure("addLog");
         $conn->setArguments(["message"=>$logMessage]);
         $conn->execute();
@@ -35,11 +35,11 @@ $app->any('/register', function(Request $request, Response $response)
     //	the form on this page will loopback to this script on the same page (to avoid excessive files)
     if (isset($_POST['iusername']) && isset($_POST['ipassword']) && isset($_POST['ipassword2']) && isset($_POST['iemail'])) {
         //after isset check, get the _POST form data into "Input" objects
+
         //username and email are not case sensitive (will be made lowercase)
-        $inputUsername = new Coursework\InputContainer(strtolower($_POST['iusername']));
-        $inputPassword = new Coursework\InputContainer($_POST['ipassword']);
-        $inputPassword2 = new Coursework\InputContainer($_POST['ipassword2']);
-        $inputEmail = new Coursework\InputContainer(strtolower($_POST['iemail']));
+        $inputUsername = new Coursework\inputContainer(strtolower($_POST['iusername']));
+        $inputPassword = new Coursework\inputContainer($_POST['ipassword2']);
+        $inputEmail = new Coursework\inputContainer(strtolower($_POST['iemail']));
 
         //validate and sanitize
         if ($inputUsername->validate() !== true) {$inputUsername->sanitize();}
@@ -68,6 +68,7 @@ $app->any('/register', function(Request $request, Response $response)
         //check if errors exist in password input and add to tempArray if exists
         if(count($inputPassword->getErrorsArray()) > 0) {
             for ($i = 0;$i < count($inputPassword->getErrorsArray());$i++) {
+
                 //push user-friendly error message to array
                 array_push($tempErrorsArray, "Password ".$inputPassword->getErrorsArray()[$i]);
             }
@@ -103,12 +104,14 @@ $app->any('/register', function(Request $request, Response $response)
                 $login_msg .= $tempErrorsArray[$i];
             }
         } else {
+
             //quick check if the username is already being used in the database
-            $usernameCheck = new Coursework\DatabaseWrapper();
+            $usernameCheck = new Coursework\Database();
             $usernameCheck->setProcedure('findUserByUsername');
             $usernameCheck->setArguments([
                 "username" => $inputUsername->getInput()
             ]);
+
             $usernameCheckResult = $usernameCheck->execute();
             if (isset($usernameCheckResult)) {
                 if (count($usernameCheckResult) > 0) {
@@ -118,7 +121,7 @@ $app->any('/register', function(Request $request, Response $response)
                     $log = new Coursework\monolog();
                     $log->log("notice", $logMessage);
                     //make new connection to insert logs
-                    $conn = new Coursework\DatabaseWrapper();
+                    $conn = new Coursework\Database();
                     $conn->setProcedure("addLog");
                     $conn->setArguments(["message"=>$logMessage]);
                     $conn->execute();
@@ -126,11 +129,12 @@ $app->any('/register', function(Request $request, Response $response)
             }
 
             //quick check if the email is already being used in the database
-            $emailCheck = new Coursework\DatabaseWrapper();
+            $emailCheck = new Coursework\Database();
             $emailCheck->setProcedure('findUserByEmail');
             $emailCheck->setArguments([
                 "email" => $inputEmail->getInput()
             ]);
+
             $emailCheckResult = $emailCheck->execute();
             if (isset($emailCheckResult)) {
                 if (count($emailCheckResult) > 0) {
@@ -149,12 +153,13 @@ $app->any('/register', function(Request $request, Response $response)
                     $log->log("notice", $logMessage);
                 }
             } else {
+
                 //make a password salt to prevent a dictionary/rainbow table attack. Would be just as inefficient as bruteforcing a completely new password
                 //needs to be be MIME base64 for crypt() function
                 $passwordSalt = base64_encode(random_bytes(32));
                 $passwordHash = hash("sha512", $inputPassword->getInput().$passwordSalt);
                 //create new databaseWrapper
-                $conn = new Coursework\DatabaseWrapper();
+                $conn = new Coursework\Database();
                 //set the procedure and arguments
                 $conn->setProcedure('registerUser');
                 $conn->setArguments([
@@ -170,8 +175,9 @@ $app->any('/register', function(Request $request, Response $response)
                 $logMessage = date('m/d/Y h:i:s a', time()) . " :NOTICE: " . $inputUsername->getInput() . ", has successfully registered a new account. Congratulation!";
                 $log = new Coursework\monolog();
                 $log->log("notice", $logMessage);
+
                 //make new connection to insert logs
-                $conn = new Coursework\DatabaseWrapper();
+                $conn = new Coursework\Database();
                 $conn->setProcedure("addLog");
                 $conn->setArguments(["message"=>$logMessage]);
                 $conn->execute();
