@@ -38,7 +38,8 @@ $app->any('/register', function(Request $request, Response $response)
 
         //username and email are not case sensitive (will be made lowercase)
         $inputUsername = new Coursework\inputContainer(strtolower($_POST['iusername']));
-        $inputPassword = new Coursework\inputContainer($_POST['ipassword2']);
+        $inputPassword = new Coursework\inputContainer($_POST['ipassword']);
+        $inputPassword2 = new Coursework\inputContainer($_POST['ipassword2']);
         $inputEmail = new Coursework\inputContainer(strtolower($_POST['iemail']));
 
         //validate and sanitize
