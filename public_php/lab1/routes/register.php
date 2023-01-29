@@ -186,7 +186,7 @@ $app->any('/register', function(Request $request, Response $response)
     }
 
     return $this->view->render($response,
-        'register.html.twig',
+        'registerform.html.twig',
         [
             'document_title' => "Coursework Register",
             'css_path' => CSS_PATH,

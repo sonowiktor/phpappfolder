@@ -162,7 +162,7 @@ $app ->get('/', function (Request $request, Response $response) use ($app) {
 
 
     return $this->view->render($response,
-        'login.html.twig',
+        'homepageform.html.twig',
         [
             'document_title' => "Coursework Login",
             'css_path' => CSS_PATH,
@@ -171,4 +171,4 @@ $app ->get('/', function (Request $request, Response $response) use ($app) {
             'logged_in' => $loginStatus,
             'login_msg' => $login_msg
         ]);
-})->setName('login');
+})->setName('homepage');
